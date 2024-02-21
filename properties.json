@@ -1,0 +1,19 @@
+{
+    "ipv4:127.0.0.1:54317": {
+        "status": {
+            "code": "GET_PROPERTIES_NOT_IMPLEMENTED",
+            "message": "Client does not implement `get_properties`"
+        },
+        "properties": {}
+    },
+    "ipv4:127.0.0.1:54320": {
+        "status": {
+            "code": "OK",
+            "message": "Success"
+        },
+        "properties": {
+            "value1": "lorem",
+            "value2": "ipsum"
+        }
+    }
+}
