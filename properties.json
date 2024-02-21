@@ -1,19 +1,24 @@
 {
-    "ipv4:127.0.0.1:54317": {
-        "status": {
-            "code": "GET_PROPERTIES_NOT_IMPLEMENTED",
-            "message": "Client does not implement `get_properties`"
-        },
-        "properties": {}
-    },
-    "ipv4:127.0.0.1:54320": {
+    "ipv4:127.0.0.1:51763": {
         "status": {
             "code": "OK",
             "message": "Success"
         },
         "properties": {
-            "value1": "lorem",
-            "value2": "ipsum"
+            "Full CPU name": "Intel(R) Core(TM) i5-1035G4 CPU @ 1.10GHz",
+            "Total RAM": 7.777091979980469,
+            "Operating System": "Windows-10-10.0.22621-SP0"
+        }
+    },
+    "ipv4:127.0.0.1:51772": {
+        "status": {
+            "code": "OK",
+            "message": "Success"
+        },
+        "properties": {
+            "Full CPU name": "Intel(R) Core(TM) i5-1035G4 CPU @ 1.10GHz",
+            "Total RAM": 7.777091979980469,
+            "Operating System": "Windows-10-10.0.22621-SP0"
         }
     }
 }

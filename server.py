@@ -116,7 +116,7 @@ class SaveModelStrategy(fl.server.strategy.FedAvg):
 
 
 def load_parameters_from_disk(net):
-    list_of_files = [fname for fname in glob.glob('model_round_*')]
+    list_of_files = [fname for fname in glob.glob('checkpoints/model_round_*')]
     # latest_round_file = max(list_of_files, key=os.path.getctime)
     latest_round_file = max(list_of_files, key=lambda fname: int(
         fname.split('_')[-1].split('.')[0]))
