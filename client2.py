@@ -89,10 +89,8 @@ def load_data(node_id):
         batch["img"] = [pytorch_transforms(img) for img in batch["img"]]
         return batch
 
-    partition_train_test = partition_train_test.with_transform(
-        apply_transforms)
-    trainloader = DataLoader(
-        partition_train_test["train"], batch_size=32, shuffle=True)
+    partition_train_test = partition_train_test.with_transform(apply_transforms)
+    trainloader = DataLoader(partition_train_test["train"], batch_size=32, shuffle=True)
     testloader = DataLoader(partition_train_test["test"], batch_size=32)
     return trainloader, testloader
 
