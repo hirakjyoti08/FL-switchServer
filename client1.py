@@ -10,7 +10,9 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, Normalize, ToTensor
 from tqdm import tqdm
-
+import platform
+import psutil
+import cpuinfo
 from flwr.common import GetParametersIns, GetPropertiesRes
 from flwr.common.typing import Dict, Config, Scalar
 
@@ -114,8 +116,17 @@ trainloader, testloader = load_data(node_id=node_id)
 
 # Define Flower client
 class FlowerClient(fl.client.NumPyClient):
+    def collect_and_save_hardware_info(self):
+        hardware_info = {}
+        hardware_info["Operating System"] = platform.platform()
+        my_cpuinfo = cpuinfo.get_cpu_info()
+        hardware_info["Full CPU name"] = my_cpuinfo['brand_raw']
+        hardware_info["Total RAM"] = psutil.virtual_memory().total / \
+            1024 / 1024 / 1024
+        return hardware_info
+            
     def get_properties(self, config: Config) -> Dict[str, Scalar]:
-        properties = {"value1": "lorem", "value2": "ipsum"}
+        properties = self.collect_and_save_hardware_info()
         return properties
 
     def get_parameters(self, config):
