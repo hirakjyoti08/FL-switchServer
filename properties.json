@@ -10,9 +10,9 @@
             "Operating System": "Windows-10-10.0.22621-SP0",
             "CPU Mark Score": "7,981"
         },
-        "node_id": "26e46f4c-c9a1-446d-be5d-de2188398346",
+        "node_id": "b38ac65c-90fe-46ea-b59c-27c7c78c0e53",
         "node_number": "node1",
-        "done": true
+        "done": false
     },
     "ipv4:127.0.0.1:51772": {
         "status": {
@@ -25,8 +25,8 @@
             "Operating System": "Windows-10-10.0.22621-SP0",
             "CPU Mark Score": "14,186"
         },
-        "node_id": "8cae02ee-8be9-408d-ade1-cbbeedf8f0e6",
+        "node_id": "7569554f-15ca-4392-8c99-ed58592b7ba0",
         "node_number": "node2",
-        "done": true
+        "done": false
     }
 }
