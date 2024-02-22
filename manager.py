@@ -91,8 +91,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--random', action='store_true', help='Execute server.py in a random node')
     parser.add_argument('--compute', action='store_true', help='Execute server.py from properties.json')
-
     args = parser.parse_args()
+
+    node = None
 
     if args.random:
         node = random.choice(['node1', 'node2'])
@@ -103,6 +104,14 @@ def main():
         server_node = manager.get_server_node()
         print(f"Server node: {server_node}")
         subprocess.run(["python", os.path.join(server_node, "server.py")])
+
+    # Start the client.py files for the other nodes, Get a list of all nodes
+    nodes = [dir for dir in next(os.walk('./'))[1] if dir.startswith('node')]
+    # Start the client.py files for the other nodes
+    for other_node in nodes:
+        if other_node != node:
+            print(f"Starting client: {other_node}")
+            subprocess.run(["python", os.path.join(other_node, "client.py")])
 
 if __name__ == "__main__":
     main()
