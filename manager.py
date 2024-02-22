@@ -50,13 +50,37 @@ class CPUScoreManager:
     def generate_uuid(self):
         with open(self.properties_file, 'r+') as f:
             data = json.load(f)
-            for client in data:
+            for i, client in enumerate(data, start=1):
                 # Generate a unique node_id
                 node_id = str(uuid.uuid4())
                 data[client]['node_id'] = node_id
+                data[client]['node_number'] = f"node{i}"  # Add the node number
+                if 'done' not in data[client]:
+                    data[client]['done'] = False  # Add the 'done' attribute
             f.seek(0)        # <--- should reset file position to the beginning.
             json.dump(data, f, indent=4)
             f.truncate()     # remove remaining part
+            print(f"Node IDs, node numbers, and 'done' attributes have been added to properties.json")
+
+    def get_server_node(self):
+        with open(self.properties_file, 'r+') as f:
+            data = json.load(f)
+            max_score = 0
+            server_node = None
+            server_key = None
+            for client in data:
+                if data[client]['done'] == False:  # Ignore the nodes that are marked as 'done'
+                    score = int(data[client]['properties']['CPU Mark Score'].replace(',', ''))
+                    if score > max_score:
+                        max_score = score
+                        server_node = data[client]['node_number']
+                        server_key = client  # Keep track of the actual key
+            if server_key:
+                data[server_key]['done'] = True  # Mark the selected node as 'done'
+                f.seek(0)        # <--- should reset file position to the beginning.
+                json.dump(data, f, indent=4)
+                f.truncate()     # remove remaining part
+            return server_node
             
 manager = CPUScoreManager('properties.json')
 manager.update_properties_with_cpu_scores()
@@ -75,14 +99,10 @@ def main():
         print(f"Chosen node: {node}")
         subprocess.run(["python", os.path.join(node, "server.py")])
     elif args.compute:
-        with open('properties.json') as f:
-            data = json.load(f)
-            client_node = data.get('client')
-            if client_node:
-                print(f"Client node: {client_node}")
-                subprocess.run(["python", os.path.join(client_node, "server.py")])
-            else:
-                print("No client specified in properties.json")
+        manager.generate_uuid()
+        server_node = manager.get_server_node()
+        print(f"Server node: {server_node}")
+        subprocess.run(["python", os.path.join(server_node, "server.py")])
 
 if __name__ == "__main__":
     main()
