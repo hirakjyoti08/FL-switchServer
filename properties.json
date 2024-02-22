@@ -7,7 +7,8 @@
         "properties": {
             "Full CPU name": "Intel(R) Core(TM) i5-1035G4 CPU @ 1.10GHz",
             "Total RAM": 7.777091979980469,
-            "Operating System": "Windows-10-10.0.22621-SP0"
+            "Operating System": "Windows-10-10.0.22621-SP0",
+            "CPU Mark Score": "7,981"
         }
     },
     "ipv4:127.0.0.1:51772": {
@@ -16,9 +17,10 @@
             "message": "Success"
         },
         "properties": {
-            "Full CPU name": "Intel(R) Core(TM) i5-1035G4 CPU @ 1.10GHz",
+            "Full CPU name": "Apple M1 8 Core 3200 MHz",
             "Total RAM": 7.777091979980469,
-            "Operating System": "Windows-10-10.0.22621-SP0"
+            "Operating System": "Windows-10-10.0.22621-SP0",
+            "CPU Mark Score": "14,186"
         }
     }
 }
