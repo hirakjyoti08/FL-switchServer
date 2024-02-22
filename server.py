@@ -16,7 +16,6 @@ import json
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-
 class Net(nn.Module):
     """Model (simple CNN adapted from 'PyTorch: A 60 Minute Blitz')"""
 
@@ -37,9 +36,7 @@ class Net(nn.Module):
         x = F.relu(self.fc2(x))
         return self.fc3(x)
 
-
 net = Net().to(DEVICE)
-
 
 # Define metric aggregation function
 def weighted_average(metrics: List[Tuple[int, Metrics]]) -> Metrics:
@@ -49,10 +46,6 @@ def weighted_average(metrics: List[Tuple[int, Metrics]]) -> Metrics:
 
     # Aggregate and return custom metric (weighted average)
     return {"accuracy": sum(accuracies) / sum(examples)}
-
-
-# Define strategy
-# strategy = fl.server.strategy.FedAvg(evaluate_metrics_aggregation_fn=weighted_average)
 
 class SaveModelStrategy(fl.server.strategy.FedAvg):
     def _set_initial_parameters(self):
@@ -130,13 +123,7 @@ def load_parameters_from_disk(net):
     # Convert the list of numpy ndarrays to Parameters
     return parameters, latest_round_number
 
-
-# _, latest_round_number = load_parameters_from_disk(net)
 _, latest_round_number = load_parameters_from_disk(net)
-
-# strategy = SaveModelStrategy(
-#         evaluate_metrics_aggregation_fn=weighted_average,
-# )
 
 strategy = SaveModelStrategy(
     initial_parameters=None, evaluate_metrics_aggregation_fn=weighted_average)
