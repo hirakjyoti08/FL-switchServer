@@ -9,7 +9,8 @@
             "Total RAM": 7.777091979980469,
             "Operating System": "Windows-10-10.0.22621-SP0",
             "CPU Mark Score": "7,981"
-        }
+        },
+        "node_id": "13f4f402-429d-4502-ab73-8a6f2d9b32f7"
     },
     "ipv4:127.0.0.1:51772": {
         "status": {
@@ -21,6 +22,7 @@
             "Total RAM": 7.777091979980469,
             "Operating System": "Windows-10-10.0.22621-SP0",
             "CPU Mark Score": "14,186"
-        }
+        },
+        "node_id": "8a7089ab-6d50-4242-bbac-cfb4fc5fcf0a"
     }
 }

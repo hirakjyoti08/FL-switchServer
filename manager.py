@@ -3,6 +3,12 @@ import re
 from bs4 import BeautifulSoup
 import requests
 
+import argparse
+import random
+import subprocess
+import os
+import uuid
+
 class CPUScoreManager:
     def __init__(self, properties_file):
         self.properties_file = properties_file
@@ -41,7 +47,42 @@ class CPUScoreManager:
         with open(self.properties_file, 'w') as f:
             json.dump(self.properties, f, indent=4)
 
-# Example usage:
+    def generate_uuid(self):
+        with open(self.properties_file, 'r+') as f:
+            data = json.load(f)
+            for client in data:
+                # Generate a unique node_id
+                node_id = str(uuid.uuid4())
+                data[client]['node_id'] = node_id
+            f.seek(0)        # <--- should reset file position to the beginning.
+            json.dump(data, f, indent=4)
+            f.truncate()     # remove remaining part
+            
 manager = CPUScoreManager('properties.json')
 manager.update_properties_with_cpu_scores()
 manager.save_properties()
+manager.generate_uuid()
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--random', action='store_true', help='Execute server.py in a random node')
+    parser.add_argument('--compute', action='store_true', help='Execute server.py from properties.json')
+
+    args = parser.parse_args()
+
+    if args.random:
+        node = random.choice(['node1', 'node2'])
+        print(f"Chosen node: {node}")
+        subprocess.run(["python", os.path.join(node, "server.py")])
+    elif args.compute:
+        with open('properties.json') as f:
+            data = json.load(f)
+            client_node = data.get('client')
+            if client_node:
+                print(f"Client node: {client_node}")
+                subprocess.run(["python", os.path.join(client_node, "server.py")])
+            else:
+                print("No client specified in properties.json")
+
+if __name__ == "__main__":
+    main()
