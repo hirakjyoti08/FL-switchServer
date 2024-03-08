@@ -83,14 +83,13 @@ class CPUScoreManager:
             return server_node
             
 manager = CPUScoreManager('properties.json')
-manager.update_properties_with_cpu_scores()
-manager.save_properties()
-manager.generate_uuid()
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--random', action='store_true', help='Execute server.py in a random node')
     parser.add_argument('--compute', action='store_true', help='Execute server.py from properties.json')
+    parser.add_argument('--simulate', action='store_true', help='Simulate execution without modifying properties.json')
+
     args = parser.parse_args()
 
     node = None
@@ -100,7 +99,10 @@ def main():
         print(f"Chosen node: {node}")
         subprocess.run(["python", os.path.join(node, "server.py")])
     elif args.compute:
-        manager.generate_uuid()
+        if not args.simulate:
+            manager.update_properties_with_cpu_scores()
+            manager.save_properties()
+            manager.generate_uuid()
         server_node = manager.get_server_node()
         print(f"Server node: {server_node}")
         subprocess.run(["python", os.path.join(server_node, "server.py")])
