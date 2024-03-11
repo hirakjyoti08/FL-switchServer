@@ -6,3 +6,4 @@ checkpoints/
 properties.json
 .venv/
 .vscode/
+logs/

@@ -8,6 +8,9 @@ import random
 import subprocess
 import os
 import uuid
+import time
+from concurrent.futures import ThreadPoolExecutor, wait
+
 
 class CPUScoreManager:
     def __init__(self, properties_file):
@@ -93,11 +96,14 @@ def main():
     args = parser.parse_args()
 
     node = None
+    server_process = None
+    client_processes = []
 
     if args.random:
         node = random.choice(['node1', 'node2'])
         print(f"Chosen node: {node}")
-        subprocess.run(["python", os.path.join(node, "server.py")])
+        server_log_file = open(f"{node}_server.log", "w")
+        server_process = subprocess.Popen(["python", os.path.join(node, "server.py")], stdout=server_log_file, stderr=subprocess.STDOUT)
     elif args.compute:
         if not args.simulate:
             manager.update_properties_with_cpu_scores()
@@ -105,15 +111,33 @@ def main():
             manager.generate_uuid()
         server_node = manager.get_server_node()
         print(f"Server node: {server_node}")
-        subprocess.run(["python", os.path.join(server_node, "server.py")])
+        server_log_file = open(f"logs/{server_node}_server.log", "w")
+        server_process = subprocess.Popen(["python", os.path.join(server_node, "server.py")], stdout=server_log_file, stderr=subprocess.STDOUT)
+
+    time.sleep(5)  # Wait for 5 seconds before starting the clients
 
     # Start the client.py files for the other nodes, Get a list of all nodes
     nodes = [dir for dir in next(os.walk('./'))[1] if dir.startswith('node')]
     # Start the client.py files for the other nodes
-    for other_node in nodes:
-        if other_node != node:
-            print(f"Starting client: {other_node}")
-            subprocess.run(["python", os.path.join(other_node, "client.py")])
+    with ThreadPoolExecutor() as executor:
+        node_id = 0
+        for other_node in nodes:
+            if other_node != node and (server_node is None or other_node != server_node):
+                print(f"Starting client: {other_node}")
+                client_log_file = open(f"logs/{other_node}_client.log", "w")
+                client_process = subprocess.Popen(["python", os.path.join(other_node, "client.py"), "--node-id", f"{node_id}"], stdout=client_log_file, stderr=subprocess.STDOUT)
+                client_processes.append(executor.submit(client_process.wait))
+                node_id += 1
+
+        wait(client_processes)  # Wait for all client processes to finish
+
+    if server_process:
+        server_process.terminate()  # Stop the server process after all clients have finished
+        server_log_file.close()  # Close the server log file
+
+    # Close the client log files
+    for client_process in client_processes:
+        client_process.result().stdout.close()
 
 if __name__ == "__main__":
     main()
