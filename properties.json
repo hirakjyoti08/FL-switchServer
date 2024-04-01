@@ -8,9 +8,9 @@
             "Full CPU name": "Intel(R) Core(TM) i5-1035G4 CPU @ 1.10GHz",
             "Total RAM": 7.777091979980469,
             "Operating System": "Windows-10-10.0.22621-SP0",
-            "CPU Mark Score": "7,981"
+            "CPU Mark Score": "7,951"
         },
-        "node_id": "b38ac65c-90fe-46ea-b59c-27c7c78c0e53",
+        "node_id": "c8a23c81-f1ec-467b-a6c4-47dac7b59620",
         "node_number": "node1",
         "done": false
     },
@@ -23,9 +23,9 @@
             "Full CPU name": "Apple M1 8 Core 3200 MHz",
             "Total RAM": 7.777091979980469,
             "Operating System": "Windows-10-10.0.22621-SP0",
-            "CPU Mark Score": "14,186"
+            "CPU Mark Score": "14,184"
         },
-        "node_id": "7569554f-15ca-4392-8c99-ed58592b7ba0",
+        "node_id": "b77d48d9-f87d-4960-8484-e959fd77a863",
         "node_number": "node2",
         "done": false
     }
