@@ -56,20 +56,22 @@ def weighted_average(metrics: List[Tuple[int, Metrics]]) -> Metrics:
 
 class SaveModelStrategy(fl.server.strategy.FedAvg):
     def _set_initial_parameters(self):
+        if not os.listdir('checkpoints'):  # Check if the directory is empty
+            print("No checkpoints found.")
+            return None
         param, _ = load_parameters_from_disk(net)
         return param
 
     def _filter(self, obj):
         result = {}
         for key, value in obj.items():
-            if 'ipv4' in key:
-                result[key] = {
-                    'status': {
-                        'code': value.status.code.name,
-                        'message': value.status.message
-                    },
-                    'properties': value.properties
-                }
+            result[key] = {
+                'status': {
+                    'code': value.status.code.name,
+                    'message': value.status.message
+                },
+                'properties': value.properties
+            }
         with open('properties.json', 'w') as f:
             json.dump(result, f)
 
@@ -79,10 +81,11 @@ class SaveModelStrategy(fl.server.strategy.FedAvg):
         for cid, client in client_manager.all().items():
             ins = GetPropertiesIns({})
             client_properties[cid] = client.get_properties(ins, timeout=30)
+        print(f"Client properties before filter: {client_properties}")
         print(self._filter(client_properties))
         # for loading saved model checkpoints
         initial_parameters = self._set_initial_parameters()
-        return initial_parameters
+        return initial_parameters  # Always return initial_parameters, which could be None
 
     def aggregate_fit(
         self,
@@ -117,18 +120,21 @@ class SaveModelStrategy(fl.server.strategy.FedAvg):
 
 def load_parameters_from_disk(net):
     list_of_files = [fname for fname in glob.glob('checkpoints/model_round_*')]
-    # latest_round_file = max(list_of_files, key=os.path.getctime)
-    latest_round_file = max(list_of_files, key=lambda fname: int(
-        fname.split('_')[-1].split('.')[0]))
-    latest_round_number = int(latest_round_file.split('_')[-1].split('.')[0])
-    print(f"Loaded {latest_round_file} from disk")
-    state_dict = torch.load(latest_round_file, map_location=DEVICE)
-    net.load_state_dict(state_dict, strict=True)
-    state_dict_ndarrays = [v.cpu().numpy() for v in net.state_dict().values()]
-
-    parameters = fl.common.ndarrays_to_parameters(state_dict_ndarrays)
-    # Convert the list of numpy ndarrays to Parameters
-    return parameters, latest_round_number
+    if not list_of_files:  # Check if the list is empty
+        print("No checkpoints found.")
+        return None, None
+    else:    
+        # latest_round_file = max(list_of_files, key=os.path.getctime)
+        latest_round_file = max(list_of_files, key=lambda fname: int(
+            fname.split('_')[-1].split('.')[0]))
+        latest_round_number = int(latest_round_file.split('_')[-1].split('.')[0])
+        print(f"Loaded {latest_round_file} from disk")
+        state_dict = torch.load(latest_round_file, map_location=DEVICE)
+        net.load_state_dict(state_dict, strict=True)
+        state_dict_ndarrays = [v.cpu().numpy() for v in net.state_dict().values()]
+        parameters = fl.common.ndarrays_to_parameters(state_dict_ndarrays)
+        # Convert the list of numpy ndarrays to Parameters
+        return parameters, latest_round_number
 
 
 # _, latest_round_number = load_parameters_from_disk(net)
@@ -140,6 +146,9 @@ _, latest_round_number = load_parameters_from_disk(net)
 
 strategy = SaveModelStrategy(
     initial_parameters=None, evaluate_metrics_aggregation_fn=weighted_average)
+
+if latest_round_number is None:
+    latest_round_number = 0
 
 # Start Flower server
 fl.server.start_server(
