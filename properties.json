@@ -8,9 +8,9 @@
             "Full CPU name": "Intel(R) Core(TM) i5-1035G4 CPU @ 1.10GHz",
             "Total RAM": 7.777091979980469,
             "Operating System": "Windows-10-10.0.22621-SP0",
-            "CPU Mark Score": "7,951"
+            "CPU Mark Score": "7,944"
         },
-        "node_id": "c8a23c81-f1ec-467b-a6c4-47dac7b59620",
+        "node_id": "97cc5466-7343-40f8-9f45-454901af4031",
         "node_number": "node1",
         "done": false
     },
@@ -25,8 +25,23 @@
             "Operating System": "Windows-10-10.0.22621-SP0",
             "CPU Mark Score": "14,184"
         },
-        "node_id": "b77d48d9-f87d-4960-8484-e959fd77a863",
+        "node_id": "153fd24b-f313-4648-8efe-cf8bc0361106",
         "node_number": "node2",
+        "done": false
+    },
+    "ipv4:127.0.0.1:343545": {
+        "status": {
+            "code": "OK",
+            "message": "Success"
+        },
+        "properties": {
+            "Full CPU name": "AMD Ryzen 5 3600",
+            "Total RAM": 7.777091979980469,
+            "Operating System": "Windows-10-10.0.22621-SP0",
+            "CPU Mark Score": "17,769"
+        },
+        "node_id": "c738261c-4ab0-4b7b-83d9-49cefd83af92",
+        "node_number": "node3",
         "done": false
     }
 }

@@ -111,7 +111,7 @@ def main():
             manager.generate_uuid()
         server_node = manager.get_server_node()
         print(f"Server node: {server_node}")
-        server_log_file = open(f"../logs/{server_node}_server.log", "w")
+        server_log_file = open(f"logs/{server_node}_server.log", "w")
         server_process = subprocess.Popen(["python", os.path.join(server_node, "server.py")], stdout=server_log_file, stderr=subprocess.STDOUT)
 
     time.sleep(5)  # Wait for 5 seconds before starting the clients
@@ -124,7 +124,7 @@ def main():
         for other_node in nodes:
             if other_node != node and (server_node is None or other_node != server_node):
                 print(f"Starting client: {other_node}")
-                client_log_file = open(f"../logs/{other_node}_client.log", "w")
+                client_log_file = open(f"logs/{other_node}_client.log", "w")
                 client_process = subprocess.Popen(["python", os.path.join(other_node, "client.py"), "--node-id", f"{node_id}"], stdout=client_log_file, stderr=subprocess.STDOUT)
                 client_processes.append(executor.submit(client_process.wait))
                 node_id += 1

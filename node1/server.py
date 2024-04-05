@@ -45,9 +45,34 @@ def weighted_average(metrics: List[Tuple[int, Metrics]]) -> Metrics:
     examples = [num_examples for num_examples, _ in metrics]
     return {"accuracy": sum(accuracies) / sum(examples)}
 
+root_dir = os.path.dirname(os.path.realpath(__file__))
+checkpoints_dir = os.path.join(root_dir, '..' , 'checkpoints')
+
+def load_parameters_from_disk(net):
+    list_of_files = glob.glob(os.path.join(checkpoints_dir, 'model_round_*'))
+    if not list_of_files:  # Check if the list is empty
+        print("No checkpoints found.")
+        return None, None
+    else:    
+        # latest_round_file = max(list_of_files, key=os.path.getctime)
+        latest_round_file = max(list_of_files, key=lambda fname: int(
+            fname.split('_')[-1].split('.')[0]))
+        latest_round_number = int(latest_round_file.split('_')[-1].split('.')[0])
+        print(f"Loaded {latest_round_file} from disk")
+        state_dict = torch.load(latest_round_file, map_location=DEVICE)
+        net.load_state_dict(state_dict, strict=True)
+        state_dict_ndarrays = [v.cpu().numpy() for v in net.state_dict().values()]
+        parameters = fl.common.ndarrays_to_parameters(state_dict_ndarrays)
+        # Convert the list of numpy ndarrays to Parameters
+        return parameters, latest_round_number
+
+_, latest_round_number = load_parameters_from_disk(net)
+if latest_round_number is None:
+    latest_round_number = 0
+
 class SaveModelStrategy(fl.server.strategy.FedAvg):
     def _set_initial_parameters(self):
-        if not os.listdir('..checkpoints'):  # Check if the directory is empty
+        if not checkpoints_dir:
             print("No checkpoints found.")
             return None
         param, _ = load_parameters_from_disk(net)
@@ -90,7 +115,7 @@ class SaveModelStrategy(fl.server.strategy.FedAvg):
         aggregated_parameters, aggregated_metrics = super().aggregate_fit(server_round, results, failures)
 
         if aggregated_parameters is not None:
-            print(f"Saving round {server_round} aggregated_parameters...")
+            print(f"Saving round {server_round + latest_round_number} aggregated_parameters...")
 
             # Convert `Parameters` to `List[np.ndarray]`
             aggregated_ndarrays: List[np.ndarray] = fl.common.parameters_to_ndarrays(aggregated_parameters)
@@ -102,37 +127,14 @@ class SaveModelStrategy(fl.server.strategy.FedAvg):
             net.load_state_dict(state_dict, strict=True)
 
             # Save the model
-            torch.save(net.state_dict(), f"..checkpoints/model_round_{server_round}.pth")
+            torch.save(net.state_dict(), os.path.join(checkpoints_dir, f"model_round_{latest_round_number + server_round}.pth"))
 
             # aggregated_parameters = fl.common.ndarrays_to_parameters(aggregated_parameters)
         return aggregated_parameters, aggregated_metrics
 
 
-def load_parameters_from_disk(net):
-    list_of_files = [fname for fname in glob.glob('..checkpoints/model_round_*')]
-    if not list_of_files:  # Check if the list is empty
-        print("No checkpoints found.")
-        return None, None
-    else:    
-        # latest_round_file = max(list_of_files, key=os.path.getctime)
-        latest_round_file = max(list_of_files, key=lambda fname: int(
-            fname.split('_')[-1].split('.')[0]))
-        latest_round_number = int(latest_round_file.split('_')[-1].split('.')[0])
-        print(f"Loaded {latest_round_file} from disk")
-        state_dict = torch.load(latest_round_file, map_location=DEVICE)
-        net.load_state_dict(state_dict, strict=True)
-        state_dict_ndarrays = [v.cpu().numpy() for v in net.state_dict().values()]
-        parameters = fl.common.ndarrays_to_parameters(state_dict_ndarrays)
-        # Convert the list of numpy ndarrays to Parameters
-        return parameters, latest_round_number
-
-_, latest_round_number = load_parameters_from_disk(net)
-
 strategy = SaveModelStrategy(
     initial_parameters=None, evaluate_metrics_aggregation_fn=weighted_average)
-
-if latest_round_number is None:
-    latest_round_number = 0
 
 # Start Flower server
 fl.server.start_server(
