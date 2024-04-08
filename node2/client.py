@@ -13,6 +13,7 @@ from tqdm import tqdm
 import platform
 import psutil
 import cpuinfo
+# import wmi
 from flwr.common import GetParametersIns, GetPropertiesRes
 from flwr.common.typing import Dict, Config, Scalar
 
@@ -123,8 +124,37 @@ class FlowerClient(fl.client.NumPyClient):
         hardware_info["Full CPU name"] = my_cpuinfo['brand_raw']
         hardware_info["Total RAM"] = psutil.virtual_memory().total / \
             1024 / 1024 / 1024
-        return hardware_info
+        round(psutil.virtual_memory().available / 1024 / 1024 / 1024, 3)
+        # Get GPU name
+        # pc = wmi.WMI()
+        # try:
+        #     gpu_name = pc.Win32_VideoController()[0].name
+        # except:
+        #     gpu_name = "N/A"
+        # hardware_info["GPU Name"] = gpu_name
 
+        # Get available RAM
+        hardware_info["Available RAM (GB)"] = round(psutil.virtual_memory().available / 1024 / 1024 / 1024, 3)
+        # Get network bandwidth
+        network_io = psutil.net_io_counters()
+        # Convert bytes to Mbps (Megabits per second)
+        network_upload_mbps = round(network_io.bytes_sent * 8 / 1000000, 3)
+        network_download_mbps = round(network_io.bytes_recv * 8 / 1000000, 3)
+        hardware_info["Network Upload (Mbps)"] = network_upload_mbps
+        hardware_info["Network Download (Mbps)"] = network_download_mbps
+
+        # Calculate average CPU utilization
+        average_cpu_utilization = self.calculate_average_cpu_utilization()
+        hardware_info["Average CPU Utilization (%)"] = round(average_cpu_utilization, 3)
+        
+        return hardware_info
+    
+    def calculate_average_cpu_utilization(self):
+        cpu_utilization = psutil.cpu_percent(interval=1, percpu=True)
+        # Calculate average CPU utilization
+        average_cpu_utilization = sum(cpu_utilization) / len(cpu_utilization)
+        return average_cpu_utilization
+            
     def get_properties(self, config: Config) -> Dict[str, Scalar]:
         properties = self.collect_and_save_hardware_info()
         return properties
