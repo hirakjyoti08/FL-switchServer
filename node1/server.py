@@ -81,12 +81,18 @@ class SaveModelStrategy(fl.server.strategy.FedAvg):
     def _filter(self, obj):
         result = {}
         for key, value in obj.items():
+            props_for_scoring = {k: v for k, v in value.properties.items() if k in ['Average CPU Utilization (%)', 'Available RAM (GB)', 'Network Upload (Mbps)','Network Download (Mbps)']}
+            # Use (100 - Average CPU Utilization (%)) for CPU utilization
+            props_for_scoring['Average CPU Utilization (%)'] = 100 - props_for_scoring['Average CPU Utilization (%)'] if 'Average CPU Utilization (%)' in props_for_scoring else 0
+            # Calculate the mean of the properties
+            score = sum(props_for_scoring.values()) / len(props_for_scoring) if props_for_scoring else 0
             result[key] = {
                 'status': {
                     'code': value.status.code.name,
                     'message': value.status.message
                 },
-                'properties': value.properties
+                'properties': value.properties,
+                'score': score
             }
         with open('properties.json', 'w') as f:
             json.dump(result, f)
