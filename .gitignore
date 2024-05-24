@@ -3,7 +3,11 @@ node_modules/
 __pycache__
 blockchain/
 checkpoints/
+checkpoint_*/
 properties.json
 .venv/
 .vscode/
 logs/
+dist/
+build/
+server.spec

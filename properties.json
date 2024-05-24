@@ -1,34 +1,15 @@
 {
-    "e0d7582104b743289aa1fee6f5575fe7": {
-        "status": {
-            "code": "OK",
-            "message": "Success"
-        },
+    "192.168.137.107": {
         "properties": {
-            "Operating System": "macOS-14.3-arm64-arm-64bit",
+            "Operating System": "macOS-14.4.1-arm64-arm-64bit",
             "Total RAM": 8.0,
             "Full CPU name": "Apple M1",
-            "Available RAM (GB)": 2.066,
-            "Network Download (Mbps)": 19764.896,
-            "Network Upload (Mbps)": 2397.512,
-            "Average CPU Utilization (%)": 2.25
+            "IP address": "192.168.137.107",
+            "Available RAM (GB)": 1.817,
+            "Network Download (Mbps)": 16065.618,
+            "Network Upload (Mbps)": 5007.663,
+            "Average CPU Utilization (%)": 3.688
         },
-        "score": 5565.556
-    },
-    "7205257faaa547b4bff018a9e5378542": {
-        "status": {
-            "code": "OK",
-            "message": "Success"
-        },
-        "properties": {
-            "Operating System": "macOS-14.3-arm64-arm-64bit",
-            "Total RAM": 8.0,
-            "Full CPU name": "Apple M1",
-            "Available RAM (GB)": 2.066,
-            "Network Download (Mbps)": 19764.937,
-            "Network Upload (Mbps)": 2397.528,
-            "Average CPU Utilization (%)": 1.25
-        },
-        "score": 5565.82025
+        "score": 5292.8525
     }
 }
