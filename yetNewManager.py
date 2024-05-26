@@ -25,6 +25,7 @@ def wait_for_properties_update():
 def check_server_heartbeat(server_ip: str):
     while True:
         try:
+            print("checking server heartbeat")
             response = requests.get(f'http://{server_ip}:5000/heartbeat', timeout=5)
             if response.status_code != 200:
                 print(f'Server {server_ip} is dead')
@@ -44,6 +45,7 @@ def notify_and_handle_server_death():
         if ip == get_host_ip():
             continue
         try:
+            print("posting response for properties-updated endpoint")
             post_response = requests.post(f'http://{ip}:5000/properties-updated', timeout=5)
             if post_response.status_code != 200:
                 print(f'Failed to send update signal to server {ip}')
@@ -57,6 +59,7 @@ def get_lowest_ranked_server_ip(properties):
 
 # run as client
 def run_client():
+    print("running as client")
     wait_for_properties_update()
     with open('properties.json') as f:
         properties = json.load(f)
@@ -79,9 +82,10 @@ def my_server_rank() -> int:
     return properties[my_ip]["rank"] if my_ip in properties else None
 
 def is_next_server():
-    previous_node = [node for node in properties.values() if node["rank"] == my_server_rank - 1]
+    print("checking isNextServer")
+    previous_node = [node for node in properties.values() if node["rank"] == my_server_rank() - 1]
     if not previous_node:
-        return False
+        return False, None
     return previous_node[0]["isServer"], previous_node[0]["IP address"]
 
 

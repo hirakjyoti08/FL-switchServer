@@ -14,7 +14,7 @@
         "isServer": true,
         "rank": 1
     },
-    "192.168.137.101": {
+    "172.16.65.113": {
         "properties": {
             "Operating System": "macOS-14.4.1-arm64-arm-64bit",
             "Total RAM": 8.0,
@@ -26,10 +26,10 @@
             "Average CPU Utilization (%)": 2.75
         },
         "score": 4000,
-        "isServer": true,
+        "isServer": false,
         "rank": 2
     },
-    "192.168.137.103": {
+    "172.16.30.116": {
         "properties": {
             "Operating System": "macOS-14.4.1-arm64-arm-64bit",
             "Total RAM": 8.0,
