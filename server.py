@@ -14,6 +14,8 @@ import torch.nn.functional as F
 import flwr.server.client_manager as ClientManager
 import json
 import socket
+from flask import Flask
+import threading
 
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -94,7 +96,7 @@ class SaveModelStrategy(fl.server.strategy.FedAvg):
             # Use (100 - Average CPU Utilization (%)) for CPU utilization
             props_for_scoring['Average CPU Utilization (%)'] = 100 - props_for_scoring['Average CPU Utilization (%)'] if 'Average CPU Utilization (%)' in props_for_scoring else 0
             # Calculate the mean of the properties
-            score = sum(props_for_scoring.values()) / len(props_for_scoring) if props_for_scoring else 0
+            score = round(sum(props_for_scoring.values()) / len(props_for_scoring), 3) if props_for_scoring else 0
             ip_address = value.properties.get('IP address')
             result[ip_address] = {
                 'properties': value.properties,
@@ -174,3 +176,20 @@ fl.server.start_server(
     config=fl.server.ServerConfig(num_rounds=10 - latest_round_number),
     strategy=strategy,
 )
+
+#thread on which heartbeart runs,
+# ensure thread dies when this file dies
+
+app = Flask(__name__)
+
+@app.route('/heartbeat', methods=['GET'])
+def heartbeat():
+    return 'Server is alive!', 200
+
+def run_flask():
+    app.run(host=f'{get_host_ip()}', port=5000)
+# Create a daemon thread that will stop when the main program stops
+flask_thread = threading.Thread(target=run_flask, daemon=True)
+
+# Start the Flask thread
+flask_thread.start()

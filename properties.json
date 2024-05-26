@@ -5,11 +5,43 @@
             "Total RAM": 8.0,
             "Full CPU name": "Apple M1",
             "IP address": "192.168.137.107",
-            "Available RAM (GB)": 1.817,
-            "Network Download (Mbps)": 16065.618,
-            "Network Upload (Mbps)": 5007.663,
-            "Average CPU Utilization (%)": 3.688
+            "Available RAM (GB)": 1.736,
+            "Network Download (Mbps)": 16679.821,
+            "Network Upload (Mbps)": 5370.2,
+            "Average CPU Utilization (%)": 2.75
         },
-        "score": 5292.8525
+        "score": 5537.252,
+        "isServer": true,
+        "rank": 1
+    },
+    "192.168.137.101": {
+        "properties": {
+            "Operating System": "macOS-14.4.1-arm64-arm-64bit",
+            "Total RAM": 8.0,
+            "Full CPU name": "Apple M1",
+            "IP address": "192.168.137.107",
+            "Available RAM (GB)": 1.736,
+            "Network Download (Mbps)": 16679.821,
+            "Network Upload (Mbps)": 5370.2,
+            "Average CPU Utilization (%)": 2.75
+        },
+        "score": 4000,
+        "isServer": true,
+        "rank": 2
+    },
+    "192.168.137.103": {
+        "properties": {
+            "Operating System": "macOS-14.4.1-arm64-arm-64bit",
+            "Total RAM": 8.0,
+            "Full CPU name": "Apple M1",
+            "IP address": "192.168.137.107",
+            "Available RAM (GB)": 1.736,
+            "Network Download (Mbps)": 16679.821,
+            "Network Upload (Mbps)": 5370.2,
+            "Average CPU Utilization (%)": 2.75
+        },
+        "score": 3000,
+        "isServer": false,
+        "rank": 3
     }
 }

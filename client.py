@@ -17,6 +17,7 @@ import cpuinfo
 from flwr.common import GetParametersIns, GetPropertiesRes
 from flwr.common.typing import Dict, Config, Scalar
 import socket
+import argparse
 
 
 # #############################################################################
@@ -181,8 +182,16 @@ class FlowerClient(fl.client.NumPyClient):
         return loss, len(testloader.dataset), {"accuracy": accuracy}
 
 
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--ip', help='The IP address of the server')
+args = parser.parse_args()
+
+
+
 # Start Flower client
 fl.client.start_numpy_client(
-    server_address="192.168.137.107:8080",
+    server_address=args.ip + ":8080",
     client=FlowerClient(),
 )
